@@ -207,7 +207,86 @@ class RegistrationServiceTest {
        assertEquals(3, secondStudent.getTotalCredits());
        assertEquals(2, course.getCurrentEnrollment());
     }
- 
+
+    @Test
+    void shouldAllowRegistrationForMinimumOneCredit() {
+        Student student = new Student("S301", "Arun");
+        Course course = new Course(
+                "CS601", "Minimum Credits", 1, 30, true, null);
+
+        RegistrationService service = new RegistrationService();
+
+        boolean result = service.register(student, course);
+
+        assertTrue(result);
+        assertTrue(student.isRegistered("CS601"));
+        assertEquals(1, student.getTotalCredits());
+        assertEquals(1, course.getCurrentEnrollment());
+    }
+
+    @Test
+    void shouldAllowRegistrationForMaximumSixCredits() {
+        Student student = new Student("S302", "Meena");
+        Course course = new Course(
+                "CS602", "Maximum Credits", 6, 30, true, null);
+
+        RegistrationService service = new RegistrationService();
+
+        boolean result = service.register(student, course);
+
+        assertTrue(result);
+        assertTrue(student.isRegistered("CS602"));
+        assertEquals(6, student.getTotalCredits());
+        assertEquals(1, course.getCurrentEnrollment());
+    }
+
+    @Test
+    void shouldRejectRegistrationForZeroCreditsWithoutChangingState() {
+        Student student = new Student("S303", "Priya");
+        Course course = new Course(
+                "CS603", "Zero Credits", 0, 30, true, null);
+
+        RegistrationService service = new RegistrationService();
+
+        boolean result = service.register(student, course);
+
+        assertFalse(result);
+        assertFalse(student.isRegistered("CS603"));
+        assertEquals(0, student.getTotalCredits());
+        assertEquals(0, course.getCurrentEnrollment());
+    }
+
+    @Test
+    void shouldRejectRegistrationForSevenCreditsWithoutChangingState() {
+        Student student = new Student("S304", "Rahul");
+        Course course = new Course(
+                "CS604", "Seven Credits", 7, 30, true, null);
+
+        RegistrationService service = new RegistrationService();
+
+        boolean result = service.register(student, course);
+
+        assertFalse(result);
+        assertFalse(student.isRegistered("CS604"));
+        assertEquals(0, student.getTotalCredits());
+        assertEquals(0, course.getCurrentEnrollment());
+    }
+
+    @Test
+    void shouldRejectRegistrationForNegativeCreditsWithoutChangingState() {
+        Student student = new Student("S305", "Anita");
+        Course course = new Course(
+                "CS605", "Negative Credits", -2, 30, true, null);
+
+        RegistrationService service = new RegistrationService();
+
+        boolean result = service.register(student, course);
+
+        assertFalse(result);
+        assertFalse(student.isRegistered("CS605"));
+        assertEquals(0, student.getTotalCredits());
+        assertEquals(0, course.getCurrentEnrollment());
+    } 
 
 
 }
